@@ -492,7 +492,7 @@ body.sinal #scan,body.sinal #grain{display:none}
         if (r.ok) return r;
       } catch { /* cai pro Pages */ }
     }
-    return fetch('status.json?t=' + Date.now(), { cache: 'no-store' });
+    return fetch('https://brunoalmaz.github.io/achadinhos-painel/status.json?t=' + Date.now(), { cache: 'no-store' });
   }
   let sintonizandoAte = 0;
   const ESPERA_SVG = "data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20250%20250'%3E%3Crect%20width%3D'250'%20height%3D'250'%20fill%3D'%23f4f2ee'%2F%3E%3Ccircle%20cx%3D'125'%20cy%3D'95'%20r%3D'22'%20fill%3D'none'%20stroke%3D'%23D4246C'%20stroke-width%3D'5'%20stroke-dasharray%3D'100%2040'%3E%3CanimateTransform%20attributeName%3D'transform'%20type%3D'rotate'%20from%3D'0%20125%2095'%20to%3D'360%20125%2095'%20dur%3D'1s'%20repeatCount%3D'indefinite'%2F%3E%3C%2Fcircle%3E%3Ctext%20x%3D'125'%20y%3D'150'%20text-anchor%3D'middle'%20font-family%3D'Arial'%20font-size%3D'15'%20font-weight%3D'700'%20fill%3D'%231F1E1A'%3ESintonizando%E2%80%A6%3C%2Ftext%3E%3Ctext%20x%3D'125'%20y%3D'175'%20text-anchor%3D'middle'%20font-family%3D'Arial'%20font-size%3D'12'%20fill%3D'%236A6964'%3Eo%20QR%20aparece%20em%20~40s%3C%2Ftext%3E%3Ctext%20x%3D'125'%20y%3D'195'%20text-anchor%3D'middle'%20font-family%3D'Arial'%20font-size%3D'12'%20fill%3D'%236A6964'%3Ese%20j%C3%A1%20estiver%20conectado%2C%3C%2Ftext%3E%3Ctext%20x%3D'125'%20y%3D'212'%20text-anchor%3D'middle'%20font-family%3D'Arial'%20font-size%3D'12'%20fill%3D'%236A6964'%3En%C3%A3o%20precisa%20ler%20nada%3C%2Ftext%3E%3C%2Fsvg%3E";
@@ -697,8 +697,8 @@ body.sinal #scan,body.sinal #grain{display:none}
       pintarStatus(s);
       clearTimeout(timer); timer = setTimeout(atualizar, (s.whatsapp === 'AGUARDANDO_QR' || Date.now() < sintonizandoAte) ? 5000 : 60000);
     } catch (e) {
-      if (e.message === 'SEM_SENHA') { aviso('Digite a senha do painel em ⚙ Ajustes.', 'alerta', 0); abrirConfig(); }
-      else if (e.message === 'SENHA_ERRADA') { aviso('Senha do painel incorreta.', 'erro', 0); abrirConfig(); }
+      if (e.message === 'SEM_SENHA') { $('atualizado').textContent = 'Digite a senha do painel em ⚙ Ajustes.'; if (!window._pediuSenha) { window._pediuSenha = true; abrirConfig(); } }
+      else if (e.message === 'SENHA_ERRADA') { $('atualizado').textContent = '🔒 Senha do painel diferente da PANEL_SENHA do GitHub — status trancado (botões funcionam).'; }
       else $('atualizado').textContent = e.message;
       clearTimeout(timer); timer = setTimeout(atualizar, 60000);
     }
