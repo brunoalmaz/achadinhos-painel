@@ -325,7 +325,7 @@ body.sinal #scan,body.sinal #grain{display:none}
   <label for="cfgRepo">Repositório do bot</label>
   <input id="cfgRepo" placeholder="brunoalmaz/auto-achadinhos">
   <label for="cfgToken">Token do GitHub (pros botões)</label>
-  <input id="cfgToken" type="password" placeholder="github_pat_…">
+  <div class="botoes" style="flex-wrap:nowrap"><input id="cfgToken" type="password" placeholder="github_pat_…"><button class="btn leve" id="cfgVer" type="button" style="flex:none">👁 Mostrar</button><button class="btn leve" id="cfgCopiar" type="button" style="flex:none">Copiar</button></div>
   <div class="dica" style="margin-top:6px">Fine-grained token só do repositório do bot, com <b>Actions: Read and write</b>.</div>
   <div class="botoes" style="margin-top:24px;justify-content:space-between">
     <button class="btn leve" id="cfgSair">Apagar deste navegador</button>
@@ -717,6 +717,8 @@ body.sinal #scan,body.sinal #grain{display:none}
     guardar.set('token', $('cfgToken').value.trim());
     branchPadrao = null; $('dlgConfig').close(); $('msg').classList.remove('show'); chiado(); atualizar();
   };
+  $('cfgVer').onclick = () => { const i = $('cfgToken'); i.type = i.type === 'password' ? 'text' : 'password'; $('cfgVer').textContent = i.type === 'password' ? '👁 Mostrar' : '🙈 Esconder'; };
+  $('cfgCopiar').onclick = async () => { try { await navigator.clipboard.writeText($('cfgToken').value); $('cfgCopiar').textContent = 'Copiado ✓'; setTimeout(() => { $('cfgCopiar').textContent = 'Copiar'; }, 2000); } catch { $('cfgToken').type = 'text'; $('cfgToken').select(); } };
   $('cfgSair').onclick = () => { guardar.limpar(); $('dlgConfig').close(); location.reload(); };
 
   atualizar();
