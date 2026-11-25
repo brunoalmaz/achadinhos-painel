@@ -306,6 +306,10 @@ body.sinal #scan,body.sinal #grain{display:none}
   <p class="sub">Marque onde os achadinhos vão ser postados. A lista vem do WhatsApp conectado.</p>
   <input id="gBusca" placeholder="Buscar grupo…" style="margin-top:14px">
   <div id="gLista"></div>
+  <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+    <div class="sub" style="margin-bottom:8px">📢 <b style="color:var(--fg)">Canal do WhatsApp?</b> Canais não aparecem sozinhos. Cole o link do canal (Info do canal > Compartilhar link). O número precisa ser admin.</div>
+    <div class="botoes" style="flex-wrap:nowrap"><input id="gCanal" placeholder="https://whatsapp.com/channel/…"><button class="btn" id="gAddCanal" style="flex:none">Adicionar</button></div>
+  </div>
   <div class="botoes" style="margin-top:18px;justify-content:space-between">
     <button class="btn leve" id="gFechar">Cancelar</button>
     <button class="btn play" id="gSalvar">Salvar seleção</button>
@@ -647,7 +651,7 @@ body.sinal #scan,body.sinal #grain{display:none}
     const lista = (s.disponiveis || []).filter((d) => !q || d.nome.toLowerCase().includes(q));
     $('gLista').innerHTML = lista.length ? lista.map((d) => `
       <label class="gitem"><input type="checkbox" value="${esc(d.id)}" ${ativos.has(d.id) || (($('gLista').dataset.marcados || '').split('|').includes(d.id)) ? 'checked' : ''}>
-      <span>${esc(d.nome)}</span><span class="pill mini ${d.tipo === 'COMUNIDADE' ? 'info' : 'neutro'} tipo">${d.tipo === 'COMUNIDADE' ? 'Comunidade' : 'Grupo'}</span></label>`).join('')
+      <span>${esc(d.nome)}</span><span class="pill mini ${d.tipo === 'COMUNIDADE' ? 'info' : d.tipo === 'CANAL' ? 'ok' : 'neutro'} tipo">${d.tipo === 'COMUNIDADE' ? 'Comunidade' : d.tipo === 'CANAL' ? 'Canal' : 'Grupo'}</span></label>`).join('')
       : '<div class="vazio">Nenhum grupo encontrado.</div>';
   }
   $('btnGrupos').onclick = () => {
@@ -663,6 +667,12 @@ body.sinal #scan,body.sinal #grain{display:none}
     listarGrupos();
   };
   $('gFechar').onclick = () => $('dlgGrupos').close();
+  $('gAddCanal').onclick = () => {
+    const link = $('gCanal').value.trim();
+    if (!/whatsapp\.com\/channel\/[\w-]+/.test(link)) { aviso('Cole o link do canal, no formato https://whatsapp.com/channel/…', 'erro'); return; }
+    $('dlgGrupos').close();
+    disparar(WORKFLOW_CONECTAR, { nova_sessao: false, canal: link }, 'Buscando o canal. Em uns 60 segundos, abra "Escolher grupos" de novo: ele aparece na lista pra marcar.');
+  };
   $('gSalvar').onclick = () => {
     const marcados = new Set(($('gLista').dataset.marcados || '').split('|').filter(Boolean));
     $('gLista').querySelectorAll('input').forEach((i) => { if (i.checked) marcados.add(i.value); else marcados.delete(i.value); });
